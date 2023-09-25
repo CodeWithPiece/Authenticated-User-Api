@@ -1,5 +1,6 @@
 const env = require("dotenv");
 env.config();
+const bcrypt = require("bcrypt");
 const connection = require("./db_connection/dbConnection");
 const express = require("express");
 const upload = require("express-fileupload");
@@ -21,6 +22,23 @@ app.get("/", (req, res) => {
     .status(200)
     .json({ status: true, message: "Welcome to user management app" });
 });
+
+// const saltRounds = 10;
+// const myPlaintextPassword = "123456";
+// const someOtherPlaintextPassword = "Rajesh Kumar";
+// var newPassword = "";
+// bcrypt.hash(myPlaintextPassword, saltRounds, function (err, hash) {
+//   newPassword = hash;
+//   console.log(newPassword);
+// });
+// bcrypt.compare(myPlaintextPassword, "$2b$10$0Ii4FHGzbuECjf9b1wCCieuy8K8TmCRSOe2gGqIf8novnEy92igfG", function(err, result) {
+//   if(result){
+//     console.log("Same Password");
+//   }else{
+//     console.log("Wrong Password");
+//   }
+// });
+
 
 app.listen(PORT, () => {
   console.log(`Server Running on PORT: ${PORT}`);
