@@ -31,7 +31,7 @@ app.get("/", (req, res) => {
 //   newPassword = hash;
 //   console.log(newPassword);
 // });
-// bcrypt.compare(myPlaintextPassword, "$2b$10$0Ii4FHGzbuECjf9b1wCCieuy8K8TmCRSOe2gGqIf8novnEy92igfG", function(err, result) {
+// bcrypt.compare("nirmal@12", "$2b$10$lWJJog2q4ujZziUXkm84dexukyojidaLHuE2o/R4hsIFMwLwKWbCG", function(err, result) {
 //   if(result){
 //     console.log("Same Password");
 //   }else{

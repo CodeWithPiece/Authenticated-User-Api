@@ -1,5 +1,7 @@
+const randomstring = require("randomstring");
 const connection = require("../../db_connection/dbConnection");
 const bcrypt = require("bcrypt");
+const sendEmail = require("../../helper/SendMail");
 
 var User = function (model) {
   this.userId = model.userId;
@@ -16,32 +18,42 @@ var User = function (model) {
 };
 
 User.saveUser = (m, result) => {
-  connection.query(
-    `SELECT * FROM users WHERE userEmail = ${m.userEmail}`,
-    (err, res) => {
-      if (err) {
-        bcrypt.hash(m.userPassword, 10, function (err, hash) {
+  bcrypt.hash(m.userPassword, 10, function (err, hash) {
+    if (err) {
+      result(err, null);
+    } else {
+      connection.query(
+        "INSERT INTO users (userName, userEmail, userAddress, userPassword) values(?,?,?,?)",
+        [m.userName, m.userEmail, m.userAddress, hash],
+        (err, res) => {
           if (err) {
             result(err, null);
           } else {
+            let mailSub = "Verification Mail";
+            const randomStr = randomstring.generate();
+            let content =
+              "<p>Hello " +
+              m.userName +
+              ', Please <a href="http://localhost:3000/mail-verification?token=' +
+              randomStr +
+              '">Verify</a> your mail.</p>';
             connection.query(
-              "INSERT INTO users (userName, userEmail, userAddress, userPassword) values(?,?,?,?)",
-              [m.userName, m.userEmail, m.userAddress, hash],
+              "UPDATE users SET userToken=? WHERE userEmail=?",
+              [randomStr, m.userEmail],
               (err, res) => {
                 if (err) {
-                  result(err, null);
+                  console.log("Mail Error: " + err);
                 } else {
-                  result(null, res);
+                  sendEmail(m.userEmail, mailSub, content);
                 }
               }
             );
+            result(null, res);
           }
-        });
-      } else {
-        result(null, 1);
-      }
+        }
+      );
     }
-  );
+  });
 };
 
 User.getUsers = (result) => {

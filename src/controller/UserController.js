@@ -10,23 +10,15 @@ exports.saveUser = (req, res) => {
   console.log(m);
   userModel.saveUser(m, (err, user) => {
     if (err) {
-      console.log(err);
       return res.status(400).json({
         status: false,
         message: "Internal server error",
       });
     } else {
-      if (user == 1) {
-        res.status(400).json({
-          status: false,
-          message: "This email is already in use...!!",
-        });
-      } else {
-        res.status(200).json({
-          status: true,
-          message: "User added successfully...!!",
-        });
-      }
+      res.status(200).json({
+        status: true,
+        message: "User added successfully...!!",
+      });
     }
   });
 };
