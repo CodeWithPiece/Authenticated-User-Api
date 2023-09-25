@@ -16,23 +16,32 @@ var User = function (model) {
 };
 
 User.saveUser = (m, result) => {
-  bcrypt.hash(m.userPassword, 10, function (err, hash) {
-    if (err) {
-      result(err, null);
-    } else {
-      connection.query(
-        "INSERT INTO users (userName, userEmail, userAddress, userPassword) values(?,?,?,?)",
-        [m.userName, m.userEmail, m.userAddress, hash],
-        (err, res) => {
+  connection.query(
+    `SELECT * FROM users WHERE userEmail = ${m.userEmail}`,
+    (err, res) => {
+      if (err) {
+        bcrypt.hash(m.userPassword, 10, function (err, hash) {
           if (err) {
             result(err, null);
           } else {
-            result(null, res);
+            connection.query(
+              "INSERT INTO users (userName, userEmail, userAddress, userPassword) values(?,?,?,?)",
+              [m.userName, m.userEmail, m.userAddress, hash],
+              (err, res) => {
+                if (err) {
+                  result(err, null);
+                } else {
+                  result(null, res);
+                }
+              }
+            );
           }
-        }
-      );
+        });
+      } else {
+        result(null, 1);
+      }
     }
-  });
+  );
 };
 
 User.getUsers = (result) => {

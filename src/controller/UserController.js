@@ -16,10 +16,17 @@ exports.saveUser = (req, res) => {
         message: "Internal server error",
       });
     } else {
-      res.status(200).json({
-        status: true,
-        message: "User added successfully...!!",
-      });
+      if (user == 1) {
+        res.status(400).json({
+          status: false,
+          message: "This email is already in use...!!",
+        });
+      } else {
+        res.status(200).json({
+          status: true,
+          message: "User added successfully...!!",
+        });
+      }
     }
   });
 };
