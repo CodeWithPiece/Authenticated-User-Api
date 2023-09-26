@@ -34,7 +34,7 @@ User.saveUser = (m, result) => {
             let content =
               "<p>Hello " +
               m.userName +
-              ', Please <a href="http://localhost:3000/mail-verification?token=' +
+              ', Please <a href="http://localhost:3000/usermanagement/api/mail-verification?token=' +
               randomStr +
               '">Verify</a> your mail.</p>';
             connection.query(
@@ -56,10 +56,28 @@ User.saveUser = (m, result) => {
   });
 };
 
+User.verifyUser = (token, result) => {
+  connection.query(
+    "SELECT * FROM users WHERE userToken = ?",
+    [token],
+    (err, res) => {
+      if (err) result(err, null);
+      else result(null, res);
+    }
+  );
+};
+
 User.getUsers = (result) => {
   connection.query("SELECT * FROM users ORDER BY userId DESC", (err, res) => {
-    if (err) result(err, null);
-    else result(null, res);
+    if (err) {
+      result(err, null);
+    } else {
+      if (res && res.length) {
+        result(null, res);
+      } else {
+        result(null, null);
+      }
+    }
   });
 };
 

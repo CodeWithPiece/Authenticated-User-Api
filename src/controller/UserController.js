@@ -1,4 +1,5 @@
 const userModel = require("../model/User");
+const connection = require("../../db_connection/dbConnection");
 
 exports.saveUser = (req, res) => {
   var m = {
@@ -19,6 +20,33 @@ exports.saveUser = (req, res) => {
         status: true,
         message: "User added successfully...!!",
       });
+    }
+  });
+};
+
+exports.verifyUser = (req, res) => {
+  var token = req.query.token;
+  userModel.verifyUser(token, (err, user) => {
+    if (err) {
+      return res.send("404 not found");
+    } else {
+      if (user.length && user) {
+        console.log(user[0].userId);
+        console.log(token);
+        connection.query(
+          "UPDATE users SET userToken=?, isVerified=? WHERE userId=?",
+          [null, 1, user[0].userId],
+          (err, resp) => {
+            if (err) {
+              return res.send("404 not found");
+            } else {
+              return res.send("Verified Successfully...!!");
+            }
+          }
+        );
+      } else {
+        return res.send("404 not found");
+      }
     }
   });
 };
