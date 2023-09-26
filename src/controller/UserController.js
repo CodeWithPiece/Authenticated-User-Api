@@ -11,7 +11,7 @@ exports.saveUser = (req, res) => {
   console.log(m);
   userModel.saveUser(m, (err, user) => {
     if (err) {
-      return res.status(400).json({
+      res.status(400).json({
         status: false,
         message: "Internal server error",
       });
@@ -28,24 +28,24 @@ exports.verifyUser = (req, res) => {
   var token = req.query.token;
   userModel.verifyUser(token, (err, user) => {
     if (err) {
-      return res.send("404 not found");
+      res.status(400).send("404 not found");
     } else {
       if (user.length && user) {
-        console.log(user[0].userId);
-        console.log(token);
+        console.log("User Id: " + user[0].userId);
+        console.log("Verification Token: " + token);
         connection.query(
           "UPDATE users SET userToken=?, isVerified=? WHERE userId=?",
           [null, 1, user[0].userId],
           (err, resp) => {
             if (err) {
-              return res.send("404 not found");
+              res.status(400).send("404 not found");
             } else {
-              return res.send("Verified Successfully...!!");
+              res.status(200).send("Verified Successfully...!!");
             }
           }
         );
       } else {
-        return res.send("404 not found");
+        res.status(400).send("404 not found");
       }
     }
   });
@@ -55,7 +55,7 @@ exports.getUsers = (req, res) => {
   userModel.getUsers((err, users) => {
     if (err) {
       console.log(err);
-      return res.status(400).json({
+      res.status(400).json({
         status: false,
         message: "Internal server error",
         users: null,
