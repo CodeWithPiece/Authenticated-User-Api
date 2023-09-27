@@ -1,6 +1,8 @@
+const { JWT_SECRET_KEY } = process.env;
 const randomstring = require("randomstring");
 const connection = require("../../db_connection/dbConnection");
 const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
 const sendEmail = require("../../helper/SendMail");
 
 var User = function (model) {
@@ -20,14 +22,14 @@ var User = function (model) {
 User.saveUser = (m, result) => {
   bcrypt.hash(m.userPassword, 10, function (err, hash) {
     if (err) {
-      result(err, null);
+      return result(err, null);
     } else {
       connection.query(
         "INSERT INTO users (userName, userEmail, userAddress, userPassword) values(?,?,?,?)",
         [m.userName, m.userEmail, m.userAddress, hash],
         (err, res) => {
           if (err) {
-            result(err, null);
+            return result(err, null);
           } else {
             let mailSub = "Verification Mail";
             const randomStr = randomstring.generate();
@@ -48,7 +50,7 @@ User.saveUser = (m, result) => {
                 }
               }
             );
-            result(null, res);
+            return result(null, res);
           }
         }
       );
@@ -61,8 +63,34 @@ User.verifyUser = (token, result) => {
     "SELECT * FROM users WHERE userToken = ?",
     [token],
     (err, res) => {
-      if (err) result(err, null);
-      else result(null, res);
+      if (err) return result(err, null);
+      else return result(null, res);
+    }
+  );
+};
+
+User.doLogin = (m, result) => {
+  connection.query(
+    "SELECT * FROM users WHERE userEmail=?",
+    [m.userEmail],
+    (err, res) => {
+      if (err) {
+        return result(err, null);
+      }
+      if (!res.length) {
+        return result(err, "Email or Password is invalid");
+      } else {
+        bcrypt.compare(m.userPassword, res[0].userPassword, (berr, bresult) => {
+          if (berr) {
+            return result(err, null);
+          }
+          if (bresult) {
+            console.log(JWT_SECRET_KEY);
+            return result(err, JWT_SECRET_KEY);
+          }
+          return result(err, "Email or Password is invalid");
+        });
+      }
     }
   );
 };
