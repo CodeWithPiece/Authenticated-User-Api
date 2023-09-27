@@ -7,7 +7,7 @@ exports.isAuthorize = (req, res, next) => {
     ) {
       return res.status(400).json({
         status: false,
-        message: "Please provide token",
+        message: "Unauthorize Access",
       });
     }
     next();
@@ -79,7 +79,7 @@ exports.updateValidate = (req, res, next) => {
     ) {
       return res.status(400).json({
         status: false,
-        message: "Please provide token",
+        message: "Unauthorize Access",
       });
     }
     if (!req.body.userName) {

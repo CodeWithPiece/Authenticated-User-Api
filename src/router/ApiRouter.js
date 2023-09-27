@@ -8,5 +8,7 @@ router.get("/users", Validate.isAuthorize, UserController.getUsers);
 router.get("/mail-verification", UserController.verifyUser);
 router.post("/login", Validate.loginValidate, UserController.doLogin);
 router.put("/user/update", Validate.updateValidate, UserController.updateUser);
+router.get("/user", Validate.isAuthorize, UserController.getUserById);
+router.delete("/user", Validate.isAuthorize, UserController.deleteUserById);
 
 module.exports = router;

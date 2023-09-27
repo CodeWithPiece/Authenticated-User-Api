@@ -158,4 +158,46 @@ User.updateUser = (m, result) => {
   }
 };
 
+User.getUserById = (authToken, result) => {
+  try {
+    const verified = jwt.verify(authToken, JWT_SECRET_KEY);
+    if (verified) {
+      connection.query(
+        "SELECT * FROM users WHERE userId=?",
+        [verified.userId],
+        (err, res) => {
+          if (err) {
+            return result(err, null);
+          } else {
+            return result(null, res);
+          }
+        }
+      );
+    }
+  } catch (error) {
+    return result(error.message, null);
+  }
+};
+
+User.deleteUserById = (authToken, result) => {
+  try {
+    const verified = jwt.verify(authToken, JWT_SECRET_KEY);
+    if (verified) {
+      connection.query(
+        "DELETE FROM users WHERE userId=?",
+        [verified.userId],
+        (err, res) => {
+          if (err) {
+            return result(err, null);
+          } else {
+            return result(null, res);
+          }
+        }
+      );
+    }
+  } catch (error) {
+    return result(error.message, null);
+  }
+};
+
 module.exports = User;

@@ -44,12 +44,14 @@ exports.doLogin = (req, res) => {
       return res.status(400).json({
         status: false,
         message: "Internal server error",
+        login: null,
       });
     }
     if (!user.userToken) {
       return res.status(400).json({
         status: false,
         message: user,
+        login: null,
       });
     }
     return res.status(200).json({
@@ -96,6 +98,42 @@ exports.updateUser = (req, res) => {
       return res.status(200).json({
         status: true,
         message: "User Updated Successfully...!!",
+      });
+    }
+  });
+};
+
+exports.getUserById = (req, res) => {
+  const authToken = req.headers.authorization.split(" ")[1];
+  userModel.getUserById(authToken, (err, user) => {
+    if (err) {
+      return res.status(400).json({
+        status: false,
+        message: err,
+        users: null,
+      });
+    } else {
+      return res.status(200).json({
+        status: true,
+        message: "User Details",
+        user: user,
+      });
+    }
+  });
+};
+
+exports.deleteUserById = (req, res) => {
+  const authToken = req.headers.authorization.split(" ")[1];
+  userModel.deleteUserById(authToken, (err, user) => {
+    if (err) {
+      return res.status(400).json({
+        status: false,
+        message: err,
+      });
+    } else {
+      return res.status(200).json({
+        status: true,
+        message: "User Deleted Successfully...!!",
       });
     }
   });
