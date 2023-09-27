@@ -26,7 +26,7 @@ exports.verifyUser = (req, res) => {
   var token = req.query.token;
   userModel.verifyUser(token, (err, user) => {
     if (err) {
-      return res.status(400).send("404 not found");
+      return res.status(400).send("404 Not Found");
     } else {
       return res.status(200).send("Verified Successfully...!!");
     }
@@ -74,6 +74,28 @@ exports.getUsers = (req, res) => {
         status: true,
         message: "All user list",
         users: users,
+      });
+    }
+  });
+};
+
+exports.updateUser = (req, res) => {
+  const authToken = req.headers.authorization.split(" ")[1];
+  var m = {
+    authToken: authToken,
+    userName: req.body.userName,
+    userAddress: req.body.userAddress,
+  };
+  userModel.updateUser(m, (err, user) => {
+    if (err) {
+      return res.status(400).json({
+        status: false,
+        message: err,
+      });
+    } else {
+      return res.status(200).json({
+        status: true,
+        message: "User Updated Successfully...!!",
       });
     }
   });

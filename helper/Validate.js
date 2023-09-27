@@ -69,3 +69,33 @@ exports.registerValidate = (req, res, next) => {
     console.log(error);
   }
 };
+
+exports.updateValidate = (req, res, next) => {
+  try {
+    if (
+      !req.headers.authorization ||
+      !req.headers.authorization.startsWith("Bearer") ||
+      !req.headers.authorization.split(" ")[1]
+    ) {
+      return res.status(400).json({
+        status: false,
+        message: "Please provide token",
+      });
+    }
+    if (!req.body.userName) {
+      return res.status(400).json({
+        status: false,
+        message: "Please Enter Name",
+      });
+    }
+    if (!req.body.userAddress) {
+      return res.status(400).json({
+        status: false,
+        message: "Please Enter Address",
+      });
+    }
+    next();
+  } catch (error) {
+    console.log(error);
+  }
+};

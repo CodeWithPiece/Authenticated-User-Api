@@ -133,7 +133,28 @@ User.getUsers = (authToken, result) => {
       );
     }
   } catch (error) {
-    return result(error, null);
+    return result(error.message, null);
+  }
+};
+
+User.updateUser = (m, result) => {
+  try {
+    const verified = jwt.verify(m.authToken, JWT_SECRET_KEY);
+    if (verified) {
+      connection.query(
+        "UPDATE users SET userName=? , userAddress =? WHERE userId=?",
+        [m.userName, m.userAddress, verified.userId],
+        (err, res) => {
+          if (err) {
+            return result(err, null);
+          } else {
+            return result(null, res);
+          }
+        }
+      );
+    }
+  } catch (error) {
+    return result(error.message, null);
   }
 };
 
