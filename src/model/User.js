@@ -36,7 +36,7 @@ User.saveUser = (m, result) => {
             let content =
               "<p>Hello " +
               m.userName +
-              ', Please <a href="http://localhost:3000/usermanagement/api/mail-verification?token=' +
+              ', Please <a href="http://192.168.153.28:3000/usermanagement/api/mail-verification?token=' +
               randomStr +
               '">Verify</a> your mail.</p>';
             connection.query(
