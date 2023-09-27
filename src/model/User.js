@@ -63,8 +63,25 @@ User.verifyUser = (token, result) => {
     "SELECT * FROM users WHERE userToken = ?",
     [token],
     (err, res) => {
-      if (err) return result(err, null);
-      else return result(null, res);
+      if (err) {
+        return result(err, null);
+      } else {
+        if (res.length && res) {
+          connection.query(
+            "UPDATE users SET userToken=?, isVerified=? WHERE userId=?",
+            [null, 1, res[0].userId],
+            (err, resp) => {
+              if (err) {
+                return result(err, null);
+              } else {
+                return result(null, resp);
+              }
+            }
+          );
+        } else {
+          return result("Not Found", null);
+        }
+      }
     }
   );
 };
@@ -98,16 +115,26 @@ User.doLogin = (m, result) => {
   );
 };
 
-User.getUsers = (result) => {
-  connection.query("SELECT * FROM users ORDER BY userId DESC", (err, res) => {
-    if (err) {
-      return result(err, null);
+User.getUsers = (authToken, result) => {
+  try {
+    const verified = jwt.verify(authToken, JWT_SECRET_KEY);
+    if (verified) {
+      connection.query(
+        "SELECT * FROM users ORDER BY userId DESC",
+        (err, res) => {
+          if (err) {
+            return result(err, null);
+          }
+          if (res && res.length) {
+            return result(null, res);
+          }
+          return result(null, res);
+        }
+      );
     }
-    if (res && res.length) {
-      return result(null, res);
-    }
-    return result(null, res);
-  });
+  } catch (error) {
+    return result(error, null);
+  }
 };
 
 module.exports = User;

@@ -8,7 +8,6 @@ exports.saveUser = (req, res) => {
     userAddress: req.body.userAddress,
     userPassword: req.body.userPassword,
   };
-  console.log(m);
   userModel.saveUser(m, (err, user) => {
     if (err) {
       return res.status(400).json({
@@ -30,23 +29,7 @@ exports.verifyUser = (req, res) => {
     if (err) {
       return res.status(400).send("404 not found");
     } else {
-      if (user.length && user) {
-        console.log("User Id: " + user[0].userId);
-        console.log("Verification Token: " + token);
-        connection.query(
-          "UPDATE users SET userToken=?, isVerified=? WHERE userId=?",
-          [null, 1, user[0].userId],
-          (err, resp) => {
-            if (err) {
-              return res.status(400).send("404 not found");
-            } else {
-              return res.status(200).send("Verified Successfully...!!");
-            }
-          }
-        );
-      } else {
-        return res.status(400).send("404 not found");
-      }
+      return res.status(200).send("Verified Successfully...!!");
     }
   });
 };
@@ -79,12 +62,12 @@ exports.doLogin = (req, res) => {
 };
 
 exports.getUsers = (req, res) => {
-  userModel.getUsers((err, users) => {
+  const authToken = req.headers.authorization.split(" ")[1];
+  userModel.getUsers(authToken, (err, users) => {
     if (err) {
-      console.log(err);
       return res.status(400).json({
         status: false,
-        message: "Internal server error",
+        message: err,
         users: [],
       });
     } else {
