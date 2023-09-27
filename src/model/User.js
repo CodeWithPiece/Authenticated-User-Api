@@ -78,17 +78,20 @@ User.doLogin = (m, result) => {
         return result(err, null);
       }
       if (!res.length) {
-        return result(err, "Email or Password is invalid");
+        return result(null, "Email or Password is invalid");
       } else {
         bcrypt.compare(m.userPassword, res[0].userPassword, (berr, bresult) => {
           if (berr) {
-            return result(err, null);
+            return result(berr, null);
           }
           if (bresult) {
-            console.log(JWT_SECRET_KEY);
-            return result(err, JWT_SECRET_KEY);
+            const token = jwt.sign(
+              { userId: res[0].userId, isAdmin: res[0].isAdmin },
+              JWT_SECRET_KEY
+            );
+            return result(null, { userToken: token, user: res[0] });
           }
-          return result(err, "Email or Password is invalid");
+          return result(null, "Email or Password is invalid");
         });
       }
     }
@@ -98,14 +101,12 @@ User.doLogin = (m, result) => {
 User.getUsers = (result) => {
   connection.query("SELECT * FROM users ORDER BY userId DESC", (err, res) => {
     if (err) {
-      result(err, null);
-    } else {
-      if (res && res.length) {
-        result(null, res);
-      } else {
-        result(null, null);
-      }
+      return result(err, null);
     }
+    if (res && res.length) {
+      return result(null, res);
+    }
+    return result(null, res);
   });
 };
 

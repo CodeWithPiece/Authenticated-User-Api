@@ -1,6 +1,5 @@
 const userModel = require("../model/User");
 const connection = require("../../db_connection/dbConnection");
-const { use } = require("../router/ApiRouter");
 
 exports.saveUser = (req, res) => {
   var m = {
@@ -64,9 +63,18 @@ exports.doLogin = (req, res) => {
         status: false,
         message: "Internal server error",
       });
-    } else {
-      return res.send(user);
     }
+    if (!user.userToken) {
+      return res.status(400).json({
+        status: false,
+        message: user,
+      });
+    }
+    return res.status(200).json({
+      status: true,
+      message: "Login Successfully...!!",
+      login: user,
+    });
   });
 };
 
@@ -77,7 +85,7 @@ exports.getUsers = (req, res) => {
       return res.status(400).json({
         status: false,
         message: "Internal server error",
-        users: null,
+        users: [],
       });
     } else {
       return res.status(200).json({
