@@ -7,9 +7,9 @@
     "start": "nodemon index.js"
   },
   "keywords": [],
-  "author": "",
+  "author": "Nirmal Kumar Pahadi",
   "license": "ISC",
-  "description": "",
+  "description": "This is my practise project in node js with express and mysql.",
   "dependencies": {
     "bcrypt": "^5.1.1",
     "body-parser": "^1.20.2",
