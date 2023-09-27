@@ -1,5 +1,4 @@
 const userModel = require("../model/User");
-const connection = require("../../db_connection/dbConnection");
 
 exports.saveUser = (req, res) => {
   var m = {

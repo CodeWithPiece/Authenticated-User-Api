@@ -1,11 +1,11 @@
 const express = require("express");
 const router = express.Router();
 
-const authValidate = require("../../helper/AuthValidate");
+const Validate = require("../../helper/Validate");
 const UserController = require("../controller/UserController");
-router.post("/user/create", UserController.saveUser);
-router.get("/users", authValidate.isAuthorize, UserController.getUsers);
+router.post("/user/create", Validate.registerValidate, UserController.saveUser);
+router.get("/users", Validate.isAuthorize, UserController.getUsers);
 router.get("/mail-verification", UserController.verifyUser);
-router.post("/login", UserController.doLogin);
+router.post("/login", Validate.loginValidate, UserController.doLogin);
 
 module.exports = router;
