@@ -11,7 +11,7 @@ const cors = require("cors");
 const app = express();
 const PORT = process.env.SERVER_PORT;
 
-app.use(cors());
+app.use(cors()); // accepting routes from all origin
 app.use(upload()); // used for accepting multipart-form-data.
 app.use("/image", express.static("public")); // used to serve static content from the server.
 app.use(bodyparse.json()); // used for accepting raw(json) data.
