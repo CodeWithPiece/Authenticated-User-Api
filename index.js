@@ -21,7 +21,7 @@ app.use("/usermanagement/api", apiRoutes);
 app.get("/", (req, res) => {
   return res
     .status(200)
-    .json({ status: true, message: "Welcome to user management app" });
+    .json({ status: true, message: "Welcome to user management app." });
 });
 
 app.listen(PORT, () => {
