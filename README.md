@@ -1,2 +1,4 @@
 # Authenticated-User-Api
- Start with npm init -y or npm i to install all the packages
+ Start with 
+ 1. npm i to install all the packages
+ 2. npm start
